@@ -1,0 +1,31 @@
+{
+  "version": "1.0.0",
+  "name": "gBirdy",
+  "description": "The adventures of Birdy! Follow Birdy as he makes his way through the jungle!",
+  "launch_path": "/index.html",
+  "icons": {
+    "16": "/assets/icon-56.png",
+    "48": "/assets/icon-56.png",
+    "60": "/assets/icon-56.png",
+    "128": "/assets/icon-112.png"
+  },
+  "fullscreen" : true,
+  "developer": {
+    "name": "Name",
+    "url": "site"
+  },
+  "type": "privileged",
+  "permissions": {
+  },
+  "installs_allowed_from": [
+    "*"
+  ],
+  "locales": {
+    "en-US": {
+      "name": "G Birdy",
+      "subtitle": "Birdy's adventures through the jungle",
+      "description": "The adventures of Birdy! Follow Birdy as he makes his way through the jungle!"
+    }
+  },
+  "default_locale": "en-US"
+}
