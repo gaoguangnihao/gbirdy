@@ -7,16 +7,17 @@ import options from './states/options';
 import about from './states/about';
 import game_start from './states/game';
 import config from './config';
-//import locale from './plugin/locale';
+import utils from './utils'
 import './plugin/softkey';
+import './plugin/l10n';
 import '../style/style.css';
 
 class Game extends Phaser.Game {
   constructor () {
-    console.log('game start');
+    utils.debug('game start', '123');
     const docElement = document.documentElement;
-    const width = docElement.clientWidth > config.gameWidth ? config.gameWidth : docElement.clientWidth;
-    const height = docElement.clientHeight > config.gameHeight ? config.gameHeight : docElement.clientHeight;
+    const width = docElement.clientWidth > config.gameConfig.gameWidth ? config.gameConfig.gameWidth : docElement.clientWidth;
+    const height = docElement.clientHeight > config.gameConfig.gameHeight ? config.gameConfig.gameHeight : docElement.clientHeight;
 
     super(width, height, Phaser.CANVAS);
 
@@ -35,17 +36,8 @@ class Game extends Phaser.Game {
 }
 
 window.game = new Game();
+window.game.customConfig = config.customConfig;
 
-//game.locale = locale;
-
-game.customConfig = Object.freeze({
-    debug: false,
-    fontStyle: Object.freeze({
-        "font": "Bebas Neue",
-        "fontSize": "20px",
-        "fill": "#FFFFFF"
-    })
-});
 // if (window.cordova) {
 //   var app = {
 //     initialize: function () {

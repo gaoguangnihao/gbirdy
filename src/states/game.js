@@ -39,7 +39,7 @@ export default class extends Phaser.State {
 
   create() {
   	console.log('game create');
- //   /*this.locale*/ = locale.getLocale();
+    this.locale = locale.getLocale();
     this.switchState(this.gameState.INGAME);
     this.background = this.add.tileSprite(0, 0, 447, 320, 'background');
     this.currentScore = 0;
@@ -74,7 +74,7 @@ export default class extends Phaser.State {
 
     this.pipes.setAll("body.velocity.x", -120);
     this.input.keyboard.addKey(Phaser.Keyboard.FIVE).onDown.add(this.jump, this);
-    this.helpText = this.add.text(game.world.centerX, 200, /*this.locale*/('helpText'), {
+    this.helpText = this.add.text(game.world.centerX, 200, this.locale('helpText'), {
       font: '20px Bebas Neue',
       fill: '#FFF',
       strokeThickness: 2,
@@ -222,8 +222,8 @@ export default class extends Phaser.State {
 
       var bgScore = game.add.sprite(2, 141, 'gameOverScore');
 
-      game.add.text(10, 291, /*this.locale*/('home'), {font: '16px Bebas Neue', fill: '#fff'});
-      game.add.text(175, 291, /*this.locale*/('playAgain'), {font: '16px Bebas Neue', fill: '#fff'});
+      game.add.text(10, 291, this.locale('home'), {font: '16px Bebas Neue', fill: '#fff'});
+      game.add.text(175, 291, this.locale('playAgain'), {font: '16px Bebas Neue', fill: '#fff'});
 
       var textScore = game.add.text(game.world.centerX, 206, this.currentScore, {
         font: '40px Bebas Neue',
@@ -233,7 +233,7 @@ export default class extends Phaser.State {
       textScore.anchor.set(0.5, 0);
 
       var yourScore = game.add.text(game.world.centerX, 190,
-      /*this.locale*/('yourScore').toUpperCase(), {font:'20px','fontWeight':'800', fill: '#fff'}).setShadow(2,2,'rgba(0,0,0,0.3)',3);
+      this.locale('yourScore').toUpperCase(), {font:'20px','fontWeight':'800', fill: '#fff'}).setShadow(2,2,'rgba(0,0,0,0.3)',3);
       yourScore.anchor.setTo(0.5);
       this.bird.kill();
 
@@ -249,8 +249,8 @@ export default class extends Phaser.State {
     self.skGroup = this.softkey.config({
       fontSize: "16px",
       fontColor: "#ffffff",
-      lsk: /*this.locale*/('restart'),
-      rsk: /*this.locale*/('options'),
+      lsk: this.locale('restart'),
+      rsk: this.locale('options'),
     });
     self.skGroup.children.forEach(function (item) {
       item.setShadow(3, 3, 'rgba(0,0,0,0.3)', 5);

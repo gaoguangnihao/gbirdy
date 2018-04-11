@@ -8,7 +8,7 @@ export default class extends Phaser.State {
 	}
 
 	create(){
-//	  this.locale = locale.getLocale();
+	  this.locale = locale.getLocale();
 	  this.softkey = this.game.plugins.add(Phaser.Plugin.Softkey);
 	  this.add.tileSprite(0, 0, 240, 320, 'bg');
 	  this.add.sprite(game.world.centerX,160,'score-table').anchor.set(0.5);
@@ -32,10 +32,10 @@ export default class extends Phaser.State {
 	  { font: '70px Bebas Neue', fill: '#fff' });
 	  texto.anchor.set(0.5);
 	  texto.setShadow(3,3,'rgba(0, 0, 0, 0.30)',5);
-	  this.add.text(10, 298, /*this.locale*/('home'), { font: '16px Bebas Neue', fill: '#fff' });
+	  this.add.text(10, 298, this.locale('home'), { font: '16px Bebas Neue', fill: '#fff' });
 
 	  //title score
-	  var scoreText = this.add.text(game.world.centerX, 120,  /*this.locale*/('score').toUpperCase(), {font:'26px', 'fontWeight':'800', fill: '#fff'});
+	  var scoreText = this.add.text(game.world.centerX, 120,  this.locale('score').toUpperCase(), {font:'26px', 'fontWeight':'800', fill: '#fff'});
 	  scoreText.anchor.set(0.5);
 	  scoreText.setShadow(3,3,'rgba(0, 0, 0, 0.30)',5);
 

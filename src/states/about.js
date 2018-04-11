@@ -12,7 +12,7 @@ export default class extends Phaser.State {
 
   create() {
   	console.log('menu create');
-//    /*/*this.locale*/*/ = locale.getLocale();
+    this.locale = locale.getLocale();
     this.add.sprite(0, 0, 'bg');
     this.add.sprite(17, 87, 'about-board');
     this.add.sprite(67, 195, 'kaios');
@@ -26,7 +26,7 @@ export default class extends Phaser.State {
     this.softkey.config({
       fontSize: "16px",
       fontColor: "#ffffff",
-      lsk: /*this.locale*/('home')
+      lsk: this.locale('home')
     });
     this.softkey.listener({
       softLeft: function () {
@@ -40,11 +40,11 @@ export default class extends Phaser.State {
 
   renderText() {
     var about = game.add.text(game.world.centerX, 120,
-    /*this.locale*/('about').toUpperCase(), { font:'26px','fontWeight':'800', fill: '#fff', align: "center" }).setShadow(2,2,'rgba(0,0,0,0.3)',3);
+    this.locale('about').toUpperCase(), { font:'26px','fontWeight':'800', fill: '#fff', align: "center" }).setShadow(2,2,'rgba(0,0,0,0.3)',3);
     about.anchor.setTo(0.5);
 
     var text = game.add.text(game.world.centerX, 165,
-      /*this.locale*/('aboutText'),
+      this.locale('aboutText'),
       { font: '16px Bebas Neue', fill: '#fff', align: "center" }).setShadow(2,2,'rgba(0,0,0,0.3)',3);
 
     text.anchor.setTo(0.5,0.5);

@@ -50,14 +50,14 @@ module.exports = {
       },
       hash: false
     })
-    // ,
-    // new BrowserSyncPlugin({
-    //   host: process.env.IP || 'localhost',
-    //   port: process.env.PORT || 3000,
-    //   server: {
-    //     baseDir: ['./', './build']
-    //   }
-    // })
+    ,
+    new BrowserSyncPlugin({
+      host: process.env.IP || 'localhost',
+      port: process.env.PORT || 3000,
+      server: {
+        baseDir: ['./', './build']
+      }
+    })
   ],
   module: {
     rules: [

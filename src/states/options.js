@@ -22,7 +22,7 @@ export default class extends Phaser.State {
 
   create() {
   	console.log('options create');
-//    /*this.locale*/ = locale.getLocale();
+    this.locale = locale.getLocale();
     this.add.sprite(0, 0, 'bg');
     this.add.sprite(17, 82, 'options-board');
     this.index = 0;
@@ -48,7 +48,7 @@ export default class extends Phaser.State {
   }
 
   renderText() {
-  	var start = this.add.text(game.world.centerX, game.world.centerY + 26, /*game.locale*/('start').toUpperCase(), { font: '20px', 'fontWeight':'800', fill: '#fff' });
+  	var start = this.add.text(game.world.centerX, game.world.centerY + 26, this.locale('start').toUpperCase(), { font: '20px', 'fontWeight':'800', fill: '#fff' });
   	start.setShadow(2, 2, 'rgba(0, 0, 0, 0.3)');
   	start.anchor.set(0.5);
   }
@@ -59,8 +59,8 @@ export default class extends Phaser.State {
     this.softkey.config({
       fontSize: "16px",
       fontColor: "#ffffff",
-      lsk: /*this.locale*/('home'),
-      rsk: /*this.locale*/('about'),
+      lsk: this.locale('home'),
+      rsk: this.locale('about'),
     });
     this.softkey.listener({
       softLeft: function () {
@@ -86,9 +86,9 @@ export default class extends Phaser.State {
   renderText() {
     var style = game.customConfig.fontStyle;
   //  style.fontSize = "24px";
-    this.add.text(game.world.centerX, 120 , /*this.locale*/('options').toUpperCase(), {font:'26px', 'fontWeight':'800', fill: '#fff'}).setShadow(2,2,'rgba(0,0,0,0.3)',3).anchor.setTo(0.5);
-    this.add.text(43, 167, /*this.locale*/('sound'), {font: '20px Bebas Neue', fill: '#fff'}).setShadow(2,2,'rgba(0,0,0,0.3)',3);
-    this.add.text(43, 203, /*this.locale*/('vibration'), {font: '20px Bebas Neue', fill: '#fff'}).setShadow(2,2,'rgba(0,0,0,0.3)',3);
+    this.add.text(game.world.centerX, 120 , this.locale('options').toUpperCase(), {font:'26px', 'fontWeight':'800', fill: '#fff'}).setShadow(2,2,'rgba(0,0,0,0.3)',3).anchor.setTo(0.5);
+    this.add.text(43, 167, this.locale('sound'), {font: '20px Bebas Neue', fill: '#fff'}).setShadow(2,2,'rgba(0,0,0,0.3)',3);
+    this.add.text(43, 203, this.locale('vibration'), {font: '20px Bebas Neue', fill: '#fff'}).setShadow(2,2,'rgba(0,0,0,0.3)',3);
   }
   select() {
     switch (this.index) {
