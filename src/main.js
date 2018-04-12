@@ -29,38 +29,38 @@ class Game extends Phaser.Game {
     this.state.start('menu');
 
     // with Cordova with need to wait that the device is ready so we will call the Boot state in another file
- //   if (!window.cordova) {
- //     this.state.start('menu')
- //   }
+   if (!window.cordova) {
+     this.state.start('menu')
+   }
   }
 }
 
 window.game = new Game();
 window.game.customConfig = config.customConfig;
 
-// if (window.cordova) {
-//   var app = {
-//     initialize: function () {
-//       document.addEventListener(
-//         'deviceready',
-//         this.onDeviceReady.bind(this),
-//         false
-//       )
-//     },
+if (window.cordova) {
+  var app = {
+    initialize: function () {
+      document.addEventListener(
+        'deviceready',
+        this.onDeviceReady.bind(this),
+        false
+      )
+    },
 
-//     // deviceready Event Handler
-//     //
-//     onDeviceReady: function () {
-//       this.receivedEvent('deviceready')
+    // deviceready Event Handler
+    //
+    onDeviceReady: function () {
+      this.receivedEvent('deviceready')
 
-//       // When the device is ready, start Phaser Boot state.
-//       window.game.state.start('menu')
-//     },
+      // When the device is ready, start Phaser Boot state.
+      window.game.state.start('menu')
+    },
 
-//     receivedEvent: function (id) {
-//       console.log('Received Event: ' + id)
-//     }
-//   }
+    receivedEvent: function (id) {
+      console.log('Received Event: ' + id)
+    }
+  }
 
-//   app.initialize()
-// }
+  app.initialize()
+}
