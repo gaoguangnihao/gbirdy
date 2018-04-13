@@ -58,7 +58,9 @@ module.exports = {
       hash: true
     }),
     new CopyWebpackPlugin([
-      { from: 'assets', to: 'assets' }
+      { from: 'assets', to: 'assets' },
+      { from: 'locales', to: 'locales' },
+      { from: 'manifest.webapp', to: 'manifest.webapp'}
     ])
   ],
   module: {

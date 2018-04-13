@@ -44,6 +44,10 @@ module.exports = {
       {
         from: path.resolve(__dirname, 'assets/**/*'),
         to: path.resolve(__dirname, 'www')
+      },
+      {
+        from: path.resolve(__dirname, 'locales/**/*'),
+        to: path.resolve(__dirname, 'www')
       }
     ]),
     new HtmlWebpackPlugin({

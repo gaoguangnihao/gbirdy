@@ -1,4 +1,4 @@
-# Phaser + ES6 + Webpack.
+# Birdy by gao@kaiosteck.
 #### A bootstrap project to create games with Phaser + ES6 + Webpack.
 
 ![Phaser+ES6+Webpack](https://raw.githubusercontent.com/lean/phaser-es6-webpack/master/assets/images/phaser-es6-webpack.jpg)
@@ -61,6 +61,10 @@ Run:
 
 This will optimize and minimize the compiled bundle.
 
+## Deploy for Kaios:
+manifest.webapp is config for Kaios platform, more information about Kaios:
+https://en.wikipedia.org/wiki/KaiOS
+
 ## Deploy for cordova:
 Make sure to uncomment the cordova.js file in the src/index.html and to update config.xml with your informations. (name/description...)
 
@@ -68,6 +72,7 @@ More informations about the cordova configuration:
 https://cordova.apache.org/docs/en/latest/config_ref/
 
 There is 3 platforms actually tested and supported : 
+
 - browser
 - ios
 - android
