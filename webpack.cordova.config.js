@@ -46,6 +46,10 @@ module.exports = {
         to: path.resolve(__dirname, 'www')
       },
       {
+        from: path.resolve(__dirname, 'shared/**/*'),
+        to: path.resolve(__dirname, 'www')
+      },
+      {
         from: path.resolve(__dirname, 'locales/**/*'),
         to: path.resolve(__dirname, 'www')
       }

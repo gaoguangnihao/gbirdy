@@ -1,7 +1,5 @@
 import Phaser from 'phaser';
 import utils from '../utils';
-
-
 export default class extends Phaser.State {
   softkey= null;
   locale= null;
@@ -9,17 +7,17 @@ export default class extends Phaser.State {
   currentPosY = 0;
   highScore = 0;
   gameState = {
-    INGAME : "INGAME",
-    STANDBY: "STANDBY",
-    YOULOSE: "YOULOSE",
-    YOUWIN: "YOUWIN",
-    OPTIONS: "OPTIONS",
-    BACKSPACE: "BACKSPACE",
-    ENDCALL: "ENDCALL",
-    SCORE: "SCORE"
+    INGAME: 'INGAME',
+    STANDBY: 'STANDBY',
+    YOULOSE: 'YOULOSE',
+    YOUWIN: 'YOUWIN',
+    OPTIONS: 'OPTIONS',
+    BACKSPACE: 'BACKSPACE',
+    ENDCALL: 'ENDCALL',
+    SCORE: 'SCORE'
   };
 
-  preload() {
+  preload () {
     this.load.image('logo', 'assets/birdy-logo.png');
     this.load.image('bg-dialog', 'assets/dialog.png');
     this.load.image('obstacle-up', 'assets/obstacle-up.png');
@@ -39,9 +37,8 @@ export default class extends Phaser.State {
     this.load.audio('jump', 'assets/jump.wav');
   }
 
-  create() {
-  	console.log('game create');
-    this.locale = locale.getLocale();
+  create () {
+    this.locale = window.locale.getLocale();
     this.switchState(this.gameState.INGAME);
     this.background = this.add.tileSprite(0, 0, 447, 320, 'background');
     this.currentScore = 0;
@@ -51,15 +48,15 @@ export default class extends Phaser.State {
     this.isPaused = false;
     this.isStarted = false;
 
-    //Initializing jump fx
-    this.jumpSound = game.add.audio('jump');
+    // Initializing jump fx
+    this.jumpSound = this.game.add.audio('jump');
     this.btBlock = false;
 
     this.renderText();
     this.softkey = this.game.plugins.add(Phaser.Plugin.Softkey);
     this.bind();
 
-    //Game init config
+    // Game init config
     this.physics.startSystem(Phaser.Physics.ARCADE);
     this.bird = this.add.sprite(50, 150, 'bird');
     this.physics.arcade.enable(this.bird);
@@ -74,24 +71,24 @@ export default class extends Phaser.State {
     this.bird.animations.add('hit', [6], 10);
     this.createObstacle();
 
-    this.pipes.setAll("body.velocity.x", -120);
+    this.pipes.setAll('body.velocity.x', -120);
     this.input.keyboard.addKey(Phaser.Keyboard.FIVE).onDown.add(this.jump, this);
-    this.helpText = this.add.text(game.world.centerX, 200, this.locale('helpText'), {
+    this.helpText = this.add.text(this.game.world.centerX, 200, this.locale('helpText'), {
       font: '20px Bebas Neue',
       fill: '#FFF',
       strokeThickness: 2,
       stroke: '#FFFFF'
-    })
+    });
     this.helpText.anchor.set(0.5);
     this.paused = true;
   }
 
-  update() {
+  update () {
     if (this.bird.y > 320) {
       this.stopPipes();
       this.gameOver();
     }
-    //avoids the bird pass through the margin top
+    // avoids the bird pass through the margin top
     if (this.bird.y <= 20) {
       this.bird.body.velocity.y = 40;
     }
@@ -100,13 +97,13 @@ export default class extends Phaser.State {
       this.bird.animations.play('fall');
     }
 
-    //check if the bird hits the pipes
+    // check if the bird hits the pipes
     this.physics.arcade.overlap(this.bird, this.pipes, this.hitPipe, null, this);
 
     if (this.bird.alive) {
       this.background.tilePosition.x -= 0.4;
 
-      if (this.pipes.children[0].position.x == 48) {
+      if (48 === this.pipes.children[0].position.x) {
         this.currentScore++;
         this.scoreText.text = this.currentScore;
       }
@@ -118,10 +115,9 @@ export default class extends Phaser.State {
     if (this.bird.angle < 20) {
       this.bird.angle += 1;
     }
-
   }
 
-  createObstacle(x, y) {
+  createObstacle (x, y) {
     var pipe = this.add.sprite(400, -128, 'obstacle-up');
     this.pipeDown = this.add.sprite(pipe.x, 198, 'obstacle-down');
     pipe.checkWorldBounds = true;
@@ -131,62 +127,59 @@ export default class extends Phaser.State {
     this.pipes.addMultiple([pipe, this.pipeDown]);
 
     pipe.events.onOutOfBounds.add(this.obstacleOut, this);
-
   }
 
-  obstacleOut(pipeUp) {
+  obstacleOut (pipeUp) {
     if (pipeUp.body.position.x < 0) {
-      pipeUp.position.x = game.width;
-      var indexY = game.rnd.integerInRange(1, 6);
+      pipeUp.position.x = this.game.width;
+      var indexY = this.game.rnd.integerInRange(1, 6);
       pipeUp.position.y = -(indexY * 32);
       this.pipeDown.x = pipeUp.position.x;
       this.pipeDown.y = (9.9 - indexY) * 32;
     }
   }
 
-  jump() {
-      //show lsk 'restart'
-      this.showLeftSoftKey(this.skGroup);
+  jump () {
+    // show lsk 'restart'
+    this.showLeftSoftKey(this.skGroup);
 
-      if (this.gameState.STANDBY === this.currentState) {
-        this.currentState = this.gameState.INGAME;
-        this.helpText.destroy();
-        game.paused = false;
-        this.isPaused = false;
-        this.isStarted = true;
-      }
+    if (this.gameState.STANDBY === this.currentState) {
+      this.currentState = this.gameState.INGAME;
+      this.helpText.destroy();
+      this.game.paused = false;
+      this.isPaused = false;
+      this.isStarted = true;
+    }
 
-      if (this.bird.alive == false)
-        return;
+    if (false === this.bird.alive) { return; }
 
-      if (/*Render.Options.loadData('sound')*/ 1) {
-        this.jumpSound.play();
-      }
+    // if (Render.Options.loadData('sound')) {
+    this.jumpSound.play();
+    // }
 
-      this.bird.animations.play('jump');
-      this.bird.body.velocity.y = -240;
-      var animation = game.add.tween(this.bird);
+    this.bird.animations.play('jump');
+    this.bird.body.velocity.y = -240;
+    var animation = this.game.add.tween(this.bird);
 
-      animation.to({angle: -20}, 100);
-      animation.start();
+    animation.to({angle: -20}, 100);
+    animation.start();
 
-      //stores current position after jumping
-      this.currentPosY = this.bird.y;
+    // stores current position after jumping
+    this.currentPosY = this.bird.y;
   }
 
-  stopPipes() {
+  stopPipes () {
     this.pipes.setAll('body.velocity.x', 0);
   }
 
-  hitPipe() {
-    if (this.bird.alive == false)
-      return;
+  hitPipe () {
+    if (false === this.bird.alive) { return; }
     this.bird.scale.setTo(1);
     this.bird.animations.play('hit');
     // check if vibration is enabled
-    if (/*Render.Options.loadData('vibration')*/ 1) {
-      navigator.vibrate(300);
-    }
+    // if (Render.Options.loadData('vibration')) {
+    navigator.vibrate(300);
+    // }
 
     this.bird.alive = false;
 
@@ -194,47 +187,45 @@ export default class extends Phaser.State {
     this.saveScore();
   }
 
-  switchState(nextState) {
+  switchState (nextState) {
     this.currentState = nextState;
   }
 
-  restartGame() {
-    game.state.start('game');
+  restartGame () {
+    this.game.state.start('game');
   }
 
-  render() {
-    // game.debug.body(this.rede);
-    // game.debug.spriteInfo(this.rede, 32, 32);
+  render () {
+    // this.game.debug.body(this.rede);
+    // this.game.debug.spriteInfo(this.rede, 32, 32);
   }
 
-  saveScore() {
+  saveScore () {
     if (this.currentScore > this.highScore) {
       this.highScore = this.currentScore;
       localStorage.setItem('birdy-score', this.highScore);
     }
-    return;
   }
 
-  gameOver() {
+  gameOver () {
     if (this.currentState !== this.gameState.YOULOSE) {
+      this.game.add.sprite(0, 0, 'bg-game-over');
+      this.game.add.sprite(25, 35, 'gameOverTitle');
 
-      game.add.sprite(0, 0, 'bg-game-over');
-      game.add.sprite(25, 35, 'gameOverTitle');
+      this.game.add.sprite(2, 141, 'gameOverScore');
 
-      var bgScore = game.add.sprite(2, 141, 'gameOverScore');
+      this.game.add.text(10, 291, this.locale('home'), {font: '16px Bebas Neue', fill: '#fff'});
+      this.game.add.text(175, 291, this.locale('playAgain'), {font: '16px Bebas Neue', fill: '#fff'});
 
-      game.add.text(10, 291, this.locale('home'), {font: '16px Bebas Neue', fill: '#fff'});
-      game.add.text(175, 291, this.locale('playAgain'), {font: '16px Bebas Neue', fill: '#fff'});
-
-      var textScore = game.add.text(game.world.centerX, 206, this.currentScore, {
+      var textScore = this.game.add.text(this.game.world.centerX, 206, this.currentScore, {
         font: '40px Bebas Neue',
         fill: '#fff',
-        align: "center"
-      }).setShadow(2,2,'rgba(0,0,0,0.3)',3);
+        align: 'center'
+      }).setShadow(2, 2, 'rgba(0,0,0,0.3)', 3);
       textScore.anchor.set(0.5, 0);
 
-      var yourScore = game.add.text(game.world.centerX, 190,
-      this.locale('yourScore').toUpperCase(), {font:'20px','fontWeight':'800', fill: '#fff'}).setShadow(2,2,'rgba(0,0,0,0.3)',3);
+      var yourScore = this.game.add.text(this.game.world.centerX, 190,
+        this.locale('yourScore').toUpperCase(), {font: '20px', 'fontWeight': '800', fill: '#fff'}).setShadow(2, 2, 'rgba(0,0,0,0.3)', 3);
       yourScore.anchor.setTo(0.5);
       this.bird.kill();
 
@@ -244,19 +235,18 @@ export default class extends Phaser.State {
     }
   }
 
-  onTouchStartHandler(evt) {
+  onTouchStartHandler (evt) {
     utils.debug('touch start evt:' + JSON.stringify(evt.target));
     var self = this;
     if (self.currentState === self.gameState.INGAME ||
       self.currentState === self.gameState.STANDBY) {
       self.jump();
-    }
-    else if (self.currentState === self.gameState.OPTIONS) {
-      //Render.Options.selectOpValue();
+    } else if (self.currentState === self.gameState.OPTIONS) {
+      // Render.Options.selectOpValue();
     } else if (self.currentState === self.gameState.YOUWIN) {
       self.switchState(self.gameState.INGAME);
       self.canMove = true;
-      //Render.YouWin.hide(self);
+      // Render.YouWin.hide(self);
     }
 
     if (self.currentState === self.gameState.STANDBY) {
@@ -264,16 +254,16 @@ export default class extends Phaser.State {
     }
   }
 
-  bind() {
+  bind () {
     var self = this;
     this.input.touch.onTouchStart = this.onTouchStartHandler.bind(this);
 
     this.softkey = this.game.plugins.add(Phaser.Plugin.Softkey);
     self.skGroup = this.softkey.config({
-      fontSize: "16px",
-      fontColor: "#ffffff",
+      fontSize: '16px',
+      fontColor: '#ffffff',
       lsk: this.locale('restart'),
-      rsk: this.locale('options'),
+      rsk: this.locale('options')
     });
     self.skGroup.children.forEach(function (item) {
       item.setShadow(3, 3, 'rgba(0,0,0,0.3)', 5);
@@ -282,49 +272,47 @@ export default class extends Phaser.State {
       softLeft: function () {
         if (self.currentState === self.gameState.YOULOSE ||
           self.currentState === self.gameState.YOUWIN) {
-          game.state.start("menu");
+          this.game.state.start('menu');
         }
         if (self.currentState === self.gameState.INGAME) {
-          game.paused = false;
-          game.state.start('game');
+          this.game.paused = false;
+          this.game.state.start('game');
         } else if (self.currentState === self.gameState.SCORE) {
-          game.paused = false;
-          game.state.start("menu");
+          this.game.paused = false;
+          this.game.state.start('menu');
         }
         if (self.currentState === self.gameState.BACKSPACE ||
           self.currentState === self.gameState.ENDCALL) {
-
           if (self.gameState.STANDBY === self.previousState) {
             self.switchState(self.gameState.STANDBY);
             self.skGroup.visible = true;
-            //Render.Confirm.hide();
+            // Render.Confirm.hide();
           } else {
             if (self.isPaused) {
               self.switchState(self.gameState.OPTIONS);
             } else {
-              game.paused = false;
+              this.game.paused = false;
               self.switchState(self.gameState.INGAME);
             }
             self.canMove = true;
             self.skGroup.visible = true;
-            //Render.Confirm.hide();
+            // Render.Confirm.hide();
           }
         } else if (self.currentState === self.gameState.OPTIONS) {
-          game.paused = false;
-          game.state.start("menu");
+          this.game.paused = false;
+          this.game.state.start('menu');
         }
       },
       enter: function () {
         if (self.currentState === self.gameState.INGAME ||
           self.currentState === self.gameState.STANDBY) {
           self.jump();
-        }
-        else if (self.currentState === self.gameState.OPTIONS) {
-          //Render.Options.selectOpValue();
+        } else if (self.currentState === self.gameState.OPTIONS) {
+          // Render.Options.selectOpValue();
         } else if (self.currentState === self.gameState.YOUWIN) {
           self.switchState(self.gameState.INGAME);
           self.canMove = true;
-          //Render.YouWin.hide(self);
+          // Render.YouWin.hide(self);
         }
 
         if (self.currentState === self.gameState.STANDBY) {
@@ -339,39 +327,37 @@ export default class extends Phaser.State {
           self.currentState === self.gameState.STANDBY) {
           self.canMove = false;
           self.isPaused = true;
-          game.paused = true;
-          //Render.Options.show(self);
+          this.game.paused = true;
+          // Render.Options.show(self);
           self.skGroup.visible = false;
-        }
-        else if (self.currentState === self.gameState.OPTIONS) {
+        } else if (self.currentState === self.gameState.OPTIONS) {
           if (!self.isStarted) {
-            game.paused = true;
-            //Render.Options.hide(self);
+            this.game.paused = true;
+            // Render.Options.hide(self);
             self.skGroup.visible = true;
             self.switchState(self.gameState.STANDBY);
-            return
+            return;
           }
           self.canMove = true;
           self.isPaused = false;
-          game.paused = false;
-          //Render.Options.hide(self);
+          this.game.paused = false;
+          // Render.Options.hide(self);
           self.skGroup.visible = true;
           self.switchState(self.gameState.INGAME);
-
         } else if (self.currentState === self.gameState.YOULOSE) {
           self.btBlock = true;
           self.switchState(self.gameState.STANDBY);
-          game.state.start(game.state.current);
+          this.game.state.start(this.game.state.current);
           setTimeout(function () {
             self.btBlock = false;
           }, 200);
         } else if (self.currentState === self.gameState.YOUWIN) {
           self.switchState(self.gameState.INGAME);
-          game.state.start(game.state.current);
-          //Render.YouWin.hide(self);
+          this.game.state.start(this.game.state.current);
+          // Render.YouWin.hide(self);
         }
         if (self.currentState === self.gameState.BACKSPACE) {
-          game.paused = false;
+          this.game.paused = false;
           window.close();
         }
         if (self.currentState === self.gameState.ENDCALL) {
@@ -379,42 +365,37 @@ export default class extends Phaser.State {
         }
       },
       backspace: function () {
-        if (self.currentState == self.gameState.ENDCALL ||
-          self.currentState == self.gameState.BACKSPACE) {
+        if (self.currentState === self.gameState.ENDCALL ||
+          self.currentState === self.gameState.BACKSPACE) {
           return;
         }
         self.previousState = self.currentState;
 
         self.switchState(self.gameState.BACKSPACE);
         self.skGroup.visible = false;
-        game.paused = true;
-        //Render.Confirm.show(self.locale('confirmText'), self);
+        this.game.paused = true;
+        // Render.Confirm.show(self.locale('confirmText'), self);
       },
       endCall: function () {
-        if (self.currentState == self.gameState.ENDCALL ||
-          self.currentState == self.gameState.BACKSPACE) {
+        if (self.currentState === self.gameState.ENDCALL ||
+          self.currentState === self.gameState.BACKSPACE) {
           return;
         }
         self.previousState = self.currentState;
 
         self.skGroup.visible = false;
         self.switchState(self.gameState.ENDCALL);
-        game.paused = true;
-        //Render.Confirm.show(self.locale('confirmText'), self);
+        this.game.paused = true;
+        // Render.Confirm.show(self.locale('confirmText'), self);
       }
     });
 
-    //hide lsk 'restart'
-    this.hideLeftSoftKey(self.skGroup)
+    // hide lsk 'restart'
+    this.hideLeftSoftKey(self.skGroup);
   }
 
-  switchState(nextState) {
-    this.currentState = nextState;
-  }
-
-  renderText() {
-
-    this.scoreText = game.add.text(game.world.centerX, 38, 0, {
+  renderText () {
+    this.scoreText = this.game.add.text(this.game.world.centerX, 38, 0, {
       font: '30px Bebas Neue',
       fill: '#ffffff',
       stroke: '#000',
@@ -423,24 +404,23 @@ export default class extends Phaser.State {
     this.scoreText.anchor.set(0.5);
   }
 
-  hideLeftSoftKey(skGroup) {
+  hideLeftSoftKey (skGroup) {
     skGroup.children[0].visible = false;
   }
 
-  showLeftSoftKey(skGroup) {
+  showLeftSoftKey (skGroup) {
     skGroup.children[0].visible = true;
   }
 };
 
-
 document.addEventListener('visibilitychange', function (e) {
   if (document.hidden) {
-    if ('INGAME' === game_start.currentState) {
-      game_start.isPaused = true;
-      game.paused = true;
-      game_start.canMove = false;
-      //Render.Options.show(game_start);
-      game_start.switchState(game_start.gameState.OPTIONS);
-    }
+    // if ('INGAME' === game_start.currentState) {
+    //   game_start.isPaused = true;
+    //   this.game.paused = true;
+    //   game_start.canMove = false;
+    //   // Render.Options.show(game_start);
+    //   game_start.switchState(game_start.gameState.OPTIONS);
+    // }
   }
 });

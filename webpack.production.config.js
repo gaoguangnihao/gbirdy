@@ -59,6 +59,7 @@ module.exports = {
     }),
     new CopyWebpackPlugin([
       { from: 'assets', to: 'assets' },
+      { from: 'shared', to: 'shared' },
       { from: 'locales', to: 'locales' },
       { from: 'manifest.webapp', to: 'manifest.webapp'}
     ])
