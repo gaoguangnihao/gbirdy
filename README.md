@@ -1,11 +1,6 @@
 # Birdy by gao@kaiosteck.
 #### A bootstrap project to create games with Phaser + ES6 + Webpack.
 
-![Phaser+ES6+Webpack](https://raw.githubusercontent.com/lean/phaser-es6-webpack/master/assets/images/phaser-es6-webpack.jpg)
-
-[![js-standard-style](https://cdn.rawgit.com/feross/standard/master/badge.svg)](https://github.com/feross/standard)
-
-
 ## Features
 - ESLINT with JavaScript Standard Style configuration
 - Next generation of Javascript
@@ -25,7 +20,7 @@ Navigate into your workspace directory.
 
 Run:
 
-```git clone https://github.com/lean/phaser-es6-webpack.git```
+```git clone git@github.com:gaoguangnihao/gbirdy.git```
 
 ## 2. Install node.js and npm:
 
@@ -98,16 +93,9 @@ This will optimize and minimize the compiled bundle.
 ## Config:
 before you get to work you will surely want to check the config file. You could setup dimensions, webfonts, etc
 
-## Webfonts:
-In the config file you can specify which webfonts you want to include. In case you do not want to use webfonts simply leave the array empty
-
 ## Credits
 Big thanks to these great repos:
 
-https://github.com/belohlavek/phaser-es6-boilerplate
-
 https://github.com/cstuncsik/phaser-es6-demo
 
-## Contributors
-
-https://github.com/RenaudROHLINGER
+https://github.com/nkholski/phaser3-es6-webpack
