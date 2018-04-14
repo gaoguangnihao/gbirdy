@@ -33,24 +33,24 @@ Phaser.Plugin.Softkey.prototype.config = function (arg) {
   }
   if (arg.lsk) {
     this.lsk.text = arg.lsk;
-    this.lsk.font = game.customConfig.fontStyle.font;
+    this.lsk.font = game.config.customConfig.fontStyle.font;
     this.lsk.fill = arg.fontColor || "#FFFFFF";
-    this.lsk.fontSize = arg.fontSize || game.customConfig.fontStyle.fontSize;
+    this.lsk.fontSize = arg.fontSize || game.config.customConfig.fontStyle.fontSize;
     this.skGroup.add(this.lsk);
   }
   if (arg.csk) {
     this.csk.text = arg.csk;
-    this.csk.font = game.customConfig.fontStyle.font;
+    this.csk.font = game.config.customConfig.fontStyle.font;
     this.csk.fill = arg.fontColor || "#FFFFFF";
-    this.csk.fontSize = arg.fontSize || game.customConfig.fontStyle.fontSize;
+    this.csk.fontSize = arg.fontSize || game.config.customConfig.fontStyle.fontSize;
     this.skGroup.add(this.csk);
   }
 
   if (arg.rsk) {
     this.rsk.text = arg.rsk;
-    this.rsk.font = game.customConfig.fontStyle.font;
+    this.rsk.font = game.config.customConfig.fontStyle.font;
     this.rsk.fill = arg.fontColor || "#FFFFFF";
-    this.rsk.fontSize = arg.fontSize || game.customConfig.fontStyle.fontSize;
+    this.rsk.fontSize = arg.fontSize || game.config.customConfig.fontStyle.fontSize;
     this.skGroup.add(this.rsk);
   }
   this.adjustMargin();
@@ -92,7 +92,7 @@ Phaser.Plugin.Softkey.prototype._keyPress = function (e, arg) {
 *TODO: debugMode = boolean, SoftLeft = 1, SoftRight = 2
 */
 Phaser.Plugin.Softkey.prototype._debug = function (key, arg) {
-  // if (game.customConfig.debug) {
+  // if (game.config.customConfig.debug) {
   //   console.log('args ', arg);
   //   console.log('key ', key);
   //   switch (key) {

@@ -1,4 +1,6 @@
-import Phaser from 'phaser'
+import Phaser from 'phaser';
+import utils from '../utils';
+
 
 export default class extends Phaser.State {
   softkey= null;
@@ -85,7 +87,6 @@ export default class extends Phaser.State {
   }
 
   update() {
-    console.log('game update');
     if (this.bird.y > 320) {
       this.stopPipes();
       this.gameOver();
@@ -243,8 +244,30 @@ export default class extends Phaser.State {
     }
   }
 
+  onTouchStartHandler(evt) {
+    utils.debug('touch start evt:' + JSON.stringify(evt.target));
+    var self = this;
+    if (self.currentState === self.gameState.INGAME ||
+      self.currentState === self.gameState.STANDBY) {
+      self.jump();
+    }
+    else if (self.currentState === self.gameState.OPTIONS) {
+      //Render.Options.selectOpValue();
+    } else if (self.currentState === self.gameState.YOUWIN) {
+      self.switchState(self.gameState.INGAME);
+      self.canMove = true;
+      //Render.YouWin.hide(self);
+    }
+
+    if (self.currentState === self.gameState.STANDBY) {
+      self.currentState = self.gameState.INGAME;
+    }
+  }
+
   bind() {
     var self = this;
+    this.input.touch.onTouchStart = this.onTouchStartHandler.bind(this);
+
     this.softkey = this.game.plugins.add(Phaser.Plugin.Softkey);
     self.skGroup = this.softkey.config({
       fontSize: "16px",

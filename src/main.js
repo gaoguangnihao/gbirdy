@@ -5,7 +5,7 @@ import menu from './states/menu';
 import score from './states/score';
 import options from './states/options';
 import about from './states/about';
-import game_start from './states/game';
+import game from './states/game';
 import config from './config';
 import utils from './utils'
 import './plugin/softkey';
@@ -14,31 +14,45 @@ import '../style/style.css';
 
 class Game extends Phaser.Game {
   constructor () {
-    utils.debug('game start', '123');
     const docElement = document.documentElement;
-    const width = docElement.clientWidth > config.gameConfig.gameWidth ? config.gameConfig.gameWidth : docElement.clientWidth;
-    const height = docElement.clientHeight > config.gameConfig.gameHeight ? config.gameConfig.gameHeight : docElement.clientHeight;
+    // Set scale rate for mobile
+    if (window.cordova && 
+      ('android' === window.cordova.platformId || 
+      'ios' === window.cordova.platformId)) {
+      config.scaleConfig.hScale =  docElement.clientWidth/config.gameConfig.gameWidth;
+      config.scaleConfig.vScale = docElement.clientHeight/config.gameConfig.gameHeight;
+    } else if (window.cordova && 
+      'browser' === window.cordova.platformId) {
+      config.scaleConfig.vScale = docElement.clientHeight/config.gameConfig.gameHeight;
+      config.scaleConfig.hScale = config.scaleConfig.vScale;
+    }
 
-    super(width, height, Phaser.CANVAS);
+    utils.debug('config.width:' + config.gameConfig.gameWidth 
+       + ' config.height:' + config.gameConfig.gameHeight
+       + ' doc.clientWidth:' + docElement.clientWidth
+       + ' doc.clientHeight' + docElement.clientHeight
+       + ' vScale:' +  config.scaleConfig.vScale
+       + ' hScale:' + config.scaleConfig.hScale);
 
-    this.state.add('menu', menu);
-    this.state.add('game', game_start);
-    this.state.add('about', about);
-    this.state.add('options', options);
-    this.state.add('score', score);
-    this.state.start('menu');
-
-    // with Cordova with need to wait that the device is ready so we will call the Boot state in another file
-   if (!window.cordova) {
-     this.state.start('menu')
-   }
+    let co = {
+        type: Phaser.CANVAS,
+        parent: 'content',
+        width: config.gameConfig.gameWidth,
+        height: config.gameConfig.gameHeight,
+    };
+    super(co);
+    this.state.add('menu', menu, false);
+    this.state.add('game', game, false);
+    this.state.add('about', about, false);
+    this.state.add('options', options, false);
+    this.state.add('score', score, false);
   }
 }
-
 window.game = new Game();
-window.game.customConfig = config.customConfig;
+window.game.config = config;
 
 if (window.cordova) {
+  utils.debug('cordova:' + JSON.stringify(window.cordova));
   var app = {
     initialize: function () {
       document.addEventListener(
@@ -51,6 +65,7 @@ if (window.cordova) {
     // deviceready Event Handler
     //
     onDeviceReady: function () {
+      utils.debug('onDeviceReady');
       this.receivedEvent('deviceready')
 
       // When the device is ready, start Phaser Boot state.
@@ -63,4 +78,6 @@ if (window.cordova) {
   }
 
   app.initialize()
+} else {
+  window.game.state.start('menu')
 }

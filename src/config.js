@@ -14,7 +14,12 @@ const config = {
 	        "fontSize": "20px",
 	        "fill": "#FFFFFF"
 	    })
-	})
+	}),
+
+	scaleConfig: {
+		hScale: 1,
+		vScale: 1
+	}
 }
 
 export default config;
