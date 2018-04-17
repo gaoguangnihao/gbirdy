@@ -16,6 +16,20 @@ const utils = {
         console.trace();
       }
     }
+  },
+
+  isKeyPad: function () {
+    if (window.cordova && ['android', 'ios'].indexof(window.cordova.platformId) >= 0) {
+      return false;
+    }
+    return true;
+  },
+  
+  isMouse: function () {
+    if (window.cordova && 'browser' === window.cordova.platformId) {
+      return true;
+    }
+    return false;
   }
 };
 

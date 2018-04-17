@@ -1,6 +1,6 @@
-import Phaser from 'phaser';
+import BaseState from '../base/base_state';
 import utils from '../utils';
-export default class extends Phaser.State {
+export default class extends BaseState {
   softkey= null;
   locale= null;
   skGroup= null;
@@ -52,9 +52,14 @@ export default class extends Phaser.State {
     this.jumpSound = this.game.add.audio('jump');
     this.btBlock = false;
 
-    this.renderText();
-    this.softkey = this.game.plugins.add(Phaser.Plugin.Softkey);
-    this.bind();
+    // score text
+    this.scoreText = this.game.add.text(this.game.world.centerX, 38, 0, {
+      font: '30px Bebas Neue',
+      fill: '#ffffff',
+      stroke: '#000',
+      strokeThickness: '2'
+    });
+    this.scoreText.anchor.set(0.5);
 
     // Game init config
     this.physics.startSystem(Phaser.Physics.ARCADE);
@@ -81,6 +86,9 @@ export default class extends Phaser.State {
     });
     this.helpText.anchor.set(0.5);
     this.paused = true;
+
+    // bind input event
+    this.bindEvent();
   }
 
   update () {
@@ -235,173 +243,169 @@ export default class extends Phaser.State {
     }
   }
 
-  onTouchStartHandler (evt) {
-    utils.debug('touch start evt:' + JSON.stringify(evt.target));
+  _generateKeyConfig () {
     var self = this;
-    if (self.currentState === self.gameState.INGAME ||
-      self.currentState === self.gameState.STANDBY) {
-      self.jump();
-    } else if (self.currentState === self.gameState.OPTIONS) {
-      // Render.Options.selectOpValue();
-    } else if (self.currentState === self.gameState.YOUWIN) {
-      self.switchState(self.gameState.INGAME);
-      self.canMove = true;
-      // Render.YouWin.hide(self);
-    }
-
-    if (self.currentState === self.gameState.STANDBY) {
-      self.currentState = self.gameState.INGAME;
-    }
-  }
-
-  bind () {
-    var self = this;
-    this.input.touch.onTouchStart = this.onTouchStartHandler.bind(this);
-
-    this.softkey = this.game.plugins.add(Phaser.Plugin.Softkey);
-    self.skGroup = this.softkey.config({
-      fontSize: '16px',
-      fontColor: '#ffffff',
-      lsk: this.locale('restart'),
-      rsk: this.locale('options')
-    });
-    self.skGroup.children.forEach(function (item) {
-      item.setShadow(3, 3, 'rgba(0,0,0,0.3)', 5);
-    });
-    this.softkey.listener({
-      softLeft: function () {
-        if (self.currentState === self.gameState.YOULOSE ||
-          self.currentState === self.gameState.YOUWIN) {
-          this.game.state.start('menu');
-        }
-        if (self.currentState === self.gameState.INGAME) {
-          this.game.paused = false;
-          this.game.state.start('game');
-        } else if (self.currentState === self.gameState.SCORE) {
-          this.game.paused = false;
-          this.game.state.start('menu');
-        }
-        if (self.currentState === self.gameState.BACKSPACE ||
-          self.currentState === self.gameState.ENDCALL) {
-          if (self.gameState.STANDBY === self.previousState) {
-            self.switchState(self.gameState.STANDBY);
-            self.skGroup.visible = true;
-            // Render.Confirm.hide();
-          } else {
-            if (self.isPaused) {
-              self.switchState(self.gameState.OPTIONS);
-            } else {
-              this.game.paused = false;
-              self.switchState(self.gameState.INGAME);
-            }
-            self.canMove = true;
-            self.skGroup.visible = true;
-            // Render.Confirm.hide();
+    return {
+      lsk: {
+        name:'restart',
+        style:{
+          fontSize: '16px',
+          fontColor: '#ffffff',
+          shadow:[3, 3, 'rgba(0, 0, 0, 0.3)', 5]
+        },
+        callback: () => {
+          if (self.currentState === self.gameState.YOULOSE ||
+            self.currentState === self.gameState.YOUWIN) {
+            this.game.state.start('menu');
           }
-        } else if (self.currentState === self.gameState.OPTIONS) {
-          this.game.paused = false;
-          this.game.state.start('menu');
+          if (self.currentState === self.gameState.INGAME) {
+            this.game.paused = false;
+            this.game.state.start('game');
+          } else if (self.currentState === self.gameState.SCORE) {
+            this.game.paused = false;
+            this.game.state.start('menu');
+          }
+          if (self.currentState === self.gameState.BACKSPACE ||
+            self.currentState === self.gameState.ENDCALL) {
+            if (self.gameState.STANDBY === self.previousState) {
+              self.switchState(self.gameState.STANDBY);
+              self.skGroup.visible = true;
+              // Render.Confirm.hide();
+            } else {
+              if (self.isPaused) {
+                self.switchState(self.gameState.OPTIONS);
+              } else {
+                this.game.paused = false;
+                self.switchState(self.gameState.INGAME);
+              }
+              self.canMove = true;
+              self.skGroup.visible = true;
+              // Render.Confirm.hide();
+            }
+          } else if (self.currentState === self.gameState.OPTIONS) {
+            this.game.paused = false;
+            this.game.state.start('menu');
+          }
         }
       },
-      enter: function () {
-        if (self.currentState === self.gameState.INGAME ||
-          self.currentState === self.gameState.STANDBY) {
-          self.jump();
-        } else if (self.currentState === self.gameState.OPTIONS) {
-          // Render.Options.selectOpValue();
-        } else if (self.currentState === self.gameState.YOUWIN) {
-          self.switchState(self.gameState.INGAME);
-          self.canMove = true;
-          // Render.YouWin.hide(self);
-        }
+      csk: {
+        callback: () => {
+          if (self.currentState === self.gameState.INGAME ||
+            self.currentState === self.gameState.STANDBY) {
+            self.jump();
+          } else if (self.currentState === self.gameState.OPTIONS) {
+            // Render.Options.selectOpValue();
+          } else if (self.currentState === self.gameState.YOUWIN) {
+            self.switchState(self.gameState.INGAME);
+            self.canMove = true;
+            // Render.YouWin.hide(self);
+          }
 
-        if (self.currentState === self.gameState.STANDBY) {
-          self.currentState = self.gameState.INGAME;
+          if (self.currentState === self.gameState.STANDBY) {
+            self.currentState = self.gameState.INGAME;
+          }
         }
       },
-      softRight: function () {
-        if (self.btBlock) {
-          return;
-        }
-        if (self.currentState === self.gameState.INGAME ||
-          self.currentState === self.gameState.STANDBY) {
-          self.canMove = false;
-          self.isPaused = true;
-          this.game.paused = true;
-          // Render.Options.show(self);
-          self.skGroup.visible = false;
-        } else if (self.currentState === self.gameState.OPTIONS) {
-          if (!self.isStarted) {
-            this.game.paused = true;
-            // Render.Options.hide(self);
-            self.skGroup.visible = true;
-            self.switchState(self.gameState.STANDBY);
+      rsk: {
+        name:'options',
+        style:{
+          fontSize: '16px',
+          fontColor: '#ffffff',
+          shadow:[3, 3, 'rgba(0, 0, 0, 0.3)', 5]
+        },
+        callback: () => {
+          if (self.btBlock) {
             return;
           }
-          self.canMove = true;
-          self.isPaused = false;
-          this.game.paused = false;
-          // Render.Options.hide(self);
-          self.skGroup.visible = true;
-          self.switchState(self.gameState.INGAME);
-        } else if (self.currentState === self.gameState.YOULOSE) {
-          self.btBlock = true;
-          self.switchState(self.gameState.STANDBY);
-          this.game.state.start(this.game.state.current);
-          setTimeout(function () {
-            self.btBlock = false;
-          }, 200);
-        } else if (self.currentState === self.gameState.YOUWIN) {
-          self.switchState(self.gameState.INGAME);
-          this.game.state.start(this.game.state.current);
-          // Render.YouWin.hide(self);
-        }
-        if (self.currentState === self.gameState.BACKSPACE) {
-          this.game.paused = false;
-          window.close();
-        }
-        if (self.currentState === self.gameState.ENDCALL) {
-          window.close();
+          if (self.currentState === self.gameState.INGAME ||
+            self.currentState === self.gameState.STANDBY) {
+            self.canMove = false;
+            self.isPaused = true;
+            this.game.paused = true;
+            // Render.Options.show(self);
+            self.skGroup.visible = false;
+          } else if (self.currentState === self.gameState.OPTIONS) {
+            if (!self.isStarted) {
+              this.game.paused = true;
+              // Render.Options.hide(self);
+              self.skGroup.visible = true;
+              self.switchState(self.gameState.STANDBY);
+              return;
+            }
+            self.canMove = true;
+            self.isPaused = false;
+            this.game.paused = false;
+            // Render.Options.hide(self);
+            self.skGroup.visible = true;
+            self.switchState(self.gameState.INGAME);
+          } else if (self.currentState === self.gameState.YOULOSE) {
+            self.btBlock = true;
+            self.switchState(self.gameState.STANDBY);
+            this.game.state.start(this.game.state.current);
+            setTimeout(function () {
+              self.btBlock = false;
+            }, 200);
+          } else if (self.currentState === self.gameState.YOUWIN) {
+            self.switchState(self.gameState.INGAME);
+            this.game.state.start(this.game.state.current);
+            // Render.YouWin.hide(self);
+          }
+          if (self.currentState === self.gameState.BACKSPACE) {
+            this.game.paused = false;
+            window.close();
+          }
+          if (self.currentState === self.gameState.ENDCALL) {
+            window.close();
+          }
         }
       },
-      backspace: function () {
-        if (self.currentState === self.gameState.ENDCALL ||
-          self.currentState === self.gameState.BACKSPACE) {
-          return;
-        }
-        self.previousState = self.currentState;
 
-        self.switchState(self.gameState.BACKSPACE);
-        self.skGroup.visible = false;
-        this.game.paused = true;
-        // Render.Confirm.show(self.locale('confirmText'), self);
+      backspace: {
+        callback: () => {
+          if (self.currentState === self.gameState.ENDCALL ||
+            self.currentState === self.gameState.BACKSPACE) {
+            return;
+          }
+          self.previousState = self.currentState;
+
+          self.switchState(self.gameState.BACKSPACE);
+          self.skGroup.visible = false;
+          this.game.paused = true;
+          // Render.Confirm.show(self.locale('confirmText'), self);
+        }
       },
-      endCall: function () {
-        if (self.currentState === self.gameState.ENDCALL ||
-          self.currentState === self.gameState.BACKSPACE) {
-          return;
-        }
-        self.previousState = self.currentState;
 
-        self.skGroup.visible = false;
-        self.switchState(self.gameState.ENDCALL);
-        this.game.paused = true;
-        // Render.Confirm.show(self.locale('confirmText'), self);
+      endcall: {
+        callback: () => {
+          if (self.currentState === self.gameState.ENDCALL ||
+            self.currentState === self.gameState.BACKSPACE) {
+            return;
+          }
+          self.previousState = self.currentState;
+
+          self.skGroup.visible = false;
+          self.switchState(self.gameState.ENDCALL);
+          this.game.paused = true;
+          // Render.Confirm.show(self.locale('confirmText'), self);
+        }
       }
-    });
-
-    // hide lsk 'restart'
-    this.hideLeftSoftKey(self.skGroup);
+    };
   }
 
-  renderText () {
-    this.scoreText = this.game.add.text(this.game.world.centerX, 38, 0, {
-      font: '30px Bebas Neue',
-      fill: '#ffffff',
-      stroke: '#000',
-      strokeThickness: '2'
-    });
-    this.scoreText.anchor.set(0.5);
+  // Override 
+  registSoftkey () {
+    this.debug('registSoftkey');
+    this.skGroup = this.navigator.config(this._generateKeyConfig());
+  }
+
+  // Override
+  registTouch () {
+    this.skGroup = this.toucher.config(this._generateKeyConfig());
+  }
+
+  // Override 
+  registMouse () {
+    this.skGroup = this.navigator.config(this._generateKeyConfig());
   }
 
   hideLeftSoftKey (skGroup) {

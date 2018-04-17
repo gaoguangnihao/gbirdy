@@ -1,11 +1,14 @@
 import Phaser from 'phaser';
+import utils from '../utils';
 
-export default class extends Phaser.Plugin {
+export default class toucher extends Phaser.Plugin {
   constructor (game, parent) {
     super(game, parent);
+    utils.debug('touch_handler constructor');
   }
 
   init () {
+    utils.debug('touch_handler init');
     this.skGroup = window.game.add.group();
     this.lsk = window.game.add.text(10, window.game.height - 12, '', { font: '16px Arial', fill: '#ffffff' });
     this.csk = window.game.add.text(window.game.world.centerX, window.game.height - 12, '', { font: '16px Arial', fill: '#ffffff' });
@@ -13,9 +16,9 @@ export default class extends Phaser.Plugin {
     this._adjustMargin();
   }
 
-  _adjustMargin () {
+  _adjustMargin (arg) {
     this.lsk.x = 10 + this.lsk.width / 2;
-    this.lsk.anchor.set(0.5);
+    this.lsk.anchor.setTo(0.5);
 
     this.csk.anchor.setTo(0.5);
 
@@ -23,38 +26,17 @@ export default class extends Phaser.Plugin {
     this.rsk.x = window.game.width - 10 - this.rsk.width / 2;
   }
 
-  _keyPress (e, arg) {
-    switch (e.key) {
-      case 'SoftLeft':
-        arg.lsk.callback();
-        break;
-      case 'Enter':
-        arg.csk.callback();
-        break;
-      case 'SoftRight':
-        arg.rsk.callback();
-        break;
-      case 'Backspace':
-        if (arg.backspace) {
-          e.preventDefault();
-          e.stopImmediatePropagation();
-          arg.backspace();
-        }
-        break;
-      case 'EndCall':
-        if (arg.endCall) {
-          e.preventDefault();
-          e.stopImmediatePropagation();
-          arg.endCall();
-        }
-        break;
-    }
-  };
+  _onTouchStart (evt, arg) {
+    utils.debug('touch start evt:' + JSON.stringify(evt.target));
+    arg.csk && arg.csk.callback();
+  }
+
+
 
   _listener (arg) {
     let self = this;
-    window.onkeydown = function (e) {
-      self._keyPress(e, arg);
+    window.game.input.touch.onTouchStart = function(evt) {
+      self._onTouchStart(evt, arg);
     };
   }
   // public 

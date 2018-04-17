@@ -1,64 +1,76 @@
-import Phaser from 'phaser';
+import BaseState from '../base/base_state';
 import utils from '../utils';
 
-export default class extends Phaser.State {
+export default class extends BaseState {
+  name = 'menu';
+  DEBUG = true;
+
   init () {
-    this.game.scale.pageAlignHorizontally = true;
-    this.game.scale.pageAlignVertically = true;
-    this.game.scale.scaleMode = Phaser.ScaleManager.USER_SCALE;
-    this.game.scale.setUserScale(this.game.config.scaleConfig.hScale,
-      this.game.config.scaleConfig.vScale);
+    super.init();
+    this.debug('init');
   }
 
   preload () {
-    this.locale = window.locale.getLocale();
+    this.debug('preload');
     this.load.image('bg', 'assets/bg-home.png');
   }
 
   create () {
-    console.log('menu create');
+    this.debug('base_state create');
     this.add.tileSprite(0, 0, 240, 320, 'bg');
 
-    this.renderText();
-    this.bind();
-  }
-
-  renderText () {
     var start = this.add.text(this.game.world.centerX, this.game.world.centerY + 26, this.locale('start').toUpperCase(), { font: '20px', 'fontWeight': '800', fill: '#fff' });
     start.setShadow(2, 2, 'rgba(0, 0, 0, 0.3)');
     start.anchor.set(0.5);
+
+    this.bindEvent();
   }
 
-  onTouchStartHandler (evt) {
-    utils.debug('touch start evt:' + JSON.stringify(evt.target));
-    this.game.state.start('game');
+  _generateKeyConfig () {
+    return {
+      lsk: {
+          name:'score',
+          style:{
+            fontSize: '16px',
+            fontColor: '#ffffff',
+            shadow:[2, 2, 'rgba(0, 0, 0, 0.3)', 0]
+          },
+          callback: () => {
+            window.game.state.start('score');
+          }
+        },
+        csk: {
+          callback: () => {
+            window.game.state.start('game');
+          }
+        },
+        rsk: {
+          name:'options',
+          style:{
+            fontSize: '16px',
+            fontColor: '#ffffff',
+            shadow:[2, 2, 'rgba(0, 0, 0, 0.3)', 0]
+          },
+          
+          callback: () => {
+            window.game.state.start('options');
+          }
+        }
+      };
+  }
+  // Override 
+  registSoftkey () {
+    this.debug('registSoftkey');
+    this.navigator.config(this._generateKeyConfig());
   }
 
-  bind () {
-    this.softkey = this.game.plugins.add(Phaser.Plugin.Softkey);
-    var skGroup = this.softkey.config({
-      fontSize: '16px',
-      fontColor: '#ffffff',
-      lsk: this.locale('score'),
-      rsk: this.locale('options')
-    });
+  // Override
+  registTouch () {
+    this.toucher.config(this._generateKeyConfig());
+  }
 
-    skGroup.children.forEach(function (item) {
-      item.setShadow(2, 2, 'rgba(0, 0, 0, 0.3)', 0);
-    });
-
-    this.input.touch.onTouchStart = this.onTouchStartHandler;
-
-    this.softkey.listener({
-      softLeft: function () {
-        window.game.state.start('score');
-      },
-      enter: function () {
-        window.game.state.start('game');
-      },
-      softRight: function () {
-        window.game.state.start('options');
-      }
-    });
+  // Override 
+  registMouse () {
+    this.navigator.config(this._generateKeyConfig());
   }
 }
