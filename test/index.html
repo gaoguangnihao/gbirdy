@@ -1,0 +1,65 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>test</title>
+    <style>
+        body{
+            padding: 0;
+            margin: 0;
+        }
+
+        canvas{
+            margin: 0 auto;
+        }
+    </style>
+</head>
+
+<body>
+ <!--phaser 2.10.3-->
+<script src="./phaser.js"></script>
+<script>
+    var game = new Phaser.Game(800, 600, Phaser.CANVAS, 'phaser-example', { preload: preload, create: create, render: render });  
+    console.log('ad');
+    function preload() {  
+        console.log('preload');
+        //加载一张图片，按538x38像素分割  
+        game.load.spritesheet('button', '../assets/birdy.png', 76.42, 38);  
+    }  
+      
+    var button;  
+    function create() {  
+        console.log('create');
+        game.stage.backgroundColor = '#4b0049';  
+        //以下三种方式均可  
+        button = game.add.button(game.world.centerX - 95, 460, 'button', click, this, 2, 1, 0);  
+        //使用手型指针  
+        button.input.useHandCursor = true;  
+        //绑定事件button.events.onInputDown.add(down, this);  
+        button.events.onInputUp.add(up, this);  
+            button.events.onInputOver.add(over, this);  
+            button.events.onInputOut.add(out, this);  
+    }  
+    function click(){  
+        console.log("点击坐标：" + game.input.activePointer.x + ',' + game.input.activePointer.y);  
+        console.log("click");  
+    }  
+    function down(){  
+        console.log("down");  
+    }  
+    function up(){  
+        console.log("up");  
+    }  
+    function over(){  
+        console.log("over");  
+    }  
+    function out(){  
+        console.log("out");  
+    }  
+    function render() {  
+        game.debug.text("测试鼠标事件", 32, 32);  
+    }  
+
+    </script>
+</body>
+</html>
